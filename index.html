@@ -2,59 +2,102 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Cortexa Nexus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CORTEXA NEXUS v2.0</title>
     <style>
-        :root { --blue: #0A84FF; --bg: #000; --card: #1c1c1e; --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, system-ui; margin: 0; padding: 20px; padding-bottom: 120px; }
-        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #333; margin-bottom: 20px; }
-        .header h1 { font-size: 1.2rem; letter-spacing: 3px; color: var(--blue); margin: 0; }
-        .input-box { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; transition: 0.3s; }
-        .input-box:focus-within { border-color: var(--blue); box-shadow: 0 0 15px rgba(10,132,255,0.3); }
-        label { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; opacity: 0.6; }
-        textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 16px; min-height: 80px; resize: none; outline: none; }
-        .fab-container { position: fixed; bottom: 30px; left: 20px; right: 20px; display: flex; gap: 10px; }
-        button { flex: 1; padding: 18px; border-radius: 16px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; }
-        .btn-copy { background: var(--blue); color: white; box-shadow: 0 10px 20px rgba(10,132,255,0.3); }
-        .btn-clear { background: #333; color: #ff453a; flex: 0.4; }
+        :root { --accent: #0A84FF; --bg: #000; --panel: #121214; --border: #2C2C2E; --text: #FFFFFF; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica; margin: 0; padding: env(safe-area-inset-top) 20px 120px 20px; }
+        
+        .header { padding: 30px 0; text-align: left; }
+        .header h1 { font-size: 24px; font-weight: 900; letter-spacing: -1px; margin: 0; color: var(--accent); }
+        .header p { font-size: 12px; color: #666; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px; }
+
+        .vault-card { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 20px; transition: 0.3s; }
+        .vault-card:focus-within { border-color: var(--accent); background: #161618; }
+        
+        label { display: block; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 17px; line-height: 1.5; min-height: 60px; outline: none; padding: 0; resize: none; font-family: inherit; }
+
+        .controls { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); padding: 20px 20px calc(env(safe-area-inset-bottom) + 20px); border-top: 1px solid var(--border); display: flex; gap: 12px; }
+        button { flex: 1; height: 60px; border-radius: 18px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s active; }
+        .btn-main { background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(10,132,255,0.2); }
+        .btn-util { background: #1C1C1E; color: #FF453A; flex: 0.3; }
+        button:active { transform: scale(0.96); opacity: 0.8; }
+
+        /* Success Flash */
+        @keyframes flash { 0% { background: var(--accent); } 100% { background: var(--panel); } }
+        .saved { animation: flash 0.4s ease-out; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>CORTEXA NEXUS</h1></div>
-    <div id="fields">
-        <div class="input-box"><label>Context</label><textarea id="c" oninput="save()"></textarea></div>
-        <div class="input-box"><label>Objective</label><textarea id="o" oninput="save()"></textarea></div>
-        <div class="input-box"><label>Style</label><textarea id="s" oninput="save()"></textarea></div>
-        <div class="input-box"><label>Tone</label><textarea id="t" oninput="save()"></textarea></div>
-        <div class="input-box"><label>Audience</label><textarea id="a" oninput="save()"></textarea></div>
-        <div class="input-box"><label>Response</label><textarea id="r" oninput="save()"></textarea></div>
-    </div>
-    <div class="fab-container">
-        <button class="btn-clear" onclick="reset()">RESET</button>
-        <button class="btn-copy" onclick="copy()">GENERATE & COPY</button>
-    </div>
-    <script>
-        const ids = ['c','o','s','t','a','r'];
-        function save() {
-            const data = {};
-            ids.forEach(id => data[id] = document.getElementById(id).value);
-            localStorage.setItem('cortexa_nexus', JSON.stringify(data));
+
+<div class="header">
+    <h1>CORTEXA NEXUS</h1>
+    <p>Persistent Engineering State: ACTIVE</p>
+</div>
+
+<div id="engine">
+    <div class="vault-card"><label>Context</label><textarea id="c" placeholder="The identity..."></textarea></div>
+    <div class="vault-card"><label>Objective</label><textarea id="o" placeholder="The mission..."></textarea></div>
+    <div class="vault-card"><label>Style</label><textarea id="s" placeholder="The aesthetic..."></textarea></div>
+    <div class="vault-card"><label>Tone</label><textarea id="t" placeholder="The vibration..."></textarea></div>
+    <div class="vault-card"><label>Audience</label><textarea id="a" placeholder="The recipients..."></textarea></div>
+    <div class="vault-card"><label>Response</label><textarea id="r" placeholder="The output format..."></textarea></div>
+</div>
+
+<div class="controls">
+    <button class="btn-util" onclick="clearNexus()">RESET</button>
+    <button class="btn-main" onclick="generateNexus()">GENERATE & COPY</button>
+</div>
+
+<script>
+    const keys = ['c','o','s','t','a','r'];
+    const labels = ['CONTEXT','OBJECTIVE','STYLE','TONE','AUDIENCE','RESPONSE FORMAT'];
+
+    // Real-time State Injection
+    document.querySelectorAll('textarea').forEach(el => {
+        el.addEventListener('input', () => {
+            const state = {};
+            keys.forEach(k => state[k] = document.getElementById(k).value);
+            localStorage.setItem('cortexa_state', JSON.stringify(state));
+        });
+    });
+
+    // State Resurrection
+    window.onload = () => {
+        const savedState = JSON.parse(localStorage.getItem('cortexa_state') || '{}');
+        keys.forEach(k => { if(savedState[k]) document.getElementById(k).value = savedState[k]; });
+    };
+
+    function generateNexus() {
+        let masterpiece = "";
+        keys.forEach((k, i) => {
+            const val = document.getElementById(k).value;
+            if(val) masterpiece += `## ${labels[i]}\n${val}\n\n`;
+        });
+
+        if(!masterpiece) return alert("System Empty. Input required.");
+
+        navigator.clipboard.writeText(masterpiece).then(() => {
+            alert("Masterpiece Copied to Clipboard.");
+        }).catch(err => {
+            // Fallback for strict iOS
+            const t = document.createElement("textarea");
+            t.value = masterpiece; document.body.appendChild(t);
+            t.select(); document.execCommand("copy");
+            document.body.removeChild(t);
+            alert("Masterpiece Copied.");
+        });
+    }
+
+    function clearNexus() {
+        if(confirm("Wipe all local memory?")) {
+            localStorage.removeItem('cortexa_state');
+            location.reload();
         }
-        window.onload = () => {
-            const saved = JSON.parse(localStorage.getItem('cortexa_nexus') || '{}');
-            ids.forEach(id => document.getElementById(id).value = saved[id] || '');
-        };
-        function reset() { if(confirm('Erase all?')) { localStorage.clear(); location.reload(); } }
-        async function copy() {
-            let p = "";
-            ids.forEach(id => {
-                const val = document.getElementById(id).value;
-                if(val) p += `# ${id.toUpperCase()}\n${val}\n\n`;
-            });
-            await navigator.clipboard.writeText(p);
-            alert('Masterpiece Copied.');
-        }
-    </script>
+    }
+</script>
+
 </body>
 </html>
-
