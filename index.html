@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Cortexa Nexus</title>
+    <style>
+        :root { --blue: #0A84FF; --bg: #000; --card: #1c1c1e; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, system-ui; margin: 0; padding: 20px; padding-bottom: 120px; }
+        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #333; margin-bottom: 20px; }
+        .header h1 { font-size: 1.2rem; letter-spacing: 3px; color: var(--blue); margin: 0; }
+        .input-box { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; transition: 0.3s; }
+        .input-box:focus-within { border-color: var(--blue); box-shadow: 0 0 15px rgba(10,132,255,0.3); }
+        label { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; opacity: 0.6; }
+        textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 16px; min-height: 80px; resize: none; outline: none; }
+        .fab-container { position: fixed; bottom: 30px; left: 20px; right: 20px; display: flex; gap: 10px; }
+        button { flex: 1; padding: 18px; border-radius: 16px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        .btn-copy { background: var(--blue); color: white; box-shadow: 0 10px 20px rgba(10,132,255,0.3); }
+        .btn-clear { background: #333; color: #ff453a; flex: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>CORTEXA NEXUS</h1></div>
+    <div id="fields">
+        <div class="input-box"><label>Context</label><textarea id="c" oninput="save()"></textarea></div>
+        <div class="input-box"><label>Objective</label><textarea id="o" oninput="save()"></textarea></div>
+        <div class="input-box"><label>Style</label><textarea id="s" oninput="save()"></textarea></div>
+        <div class="input-box"><label>Tone</label><textarea id="t" oninput="save()"></textarea></div>
+        <div class="input-box"><label>Audience</label><textarea id="a" oninput="save()"></textarea></div>
+        <div class="input-box"><label>Response</label><textarea id="r" oninput="save()"></textarea></div>
+    </div>
+    <div class="fab-container">
+        <button class="btn-clear" onclick="reset()">RESET</button>
+        <button class="btn-copy" onclick="copy()">GENERATE & COPY</button>
+    </div>
+    <script>
+        const ids = ['c','o','s','t','a','r'];
+        function save() {
+            const data = {};
+            ids.forEach(id => data[id] = document.getElementById(id).value);
+            localStorage.setItem('cortexa_nexus', JSON.stringify(data));
+        }
+        window.onload = () => {
+            const saved = JSON.parse(localStorage.getItem('cortexa_nexus') || '{}');
+            ids.forEach(id => document.getElementById(id).value = saved[id] || '');
+        };
+        function reset() { if(confirm('Erase all?')) { localStorage.clear(); location.reload(); } }
+        async function copy() {
+            let p = "";
+            ids.forEach(id => {
+                const val = document.getElementById(id).value;
+                if(val) p += `# ${id.toUpperCase()}\n${val}\n\n`;
+            });
+            await navigator.clipboard.writeText(p);
+            alert('Masterpiece Copied.');
+        }
+    </script>
+</body>
+</html>
 
